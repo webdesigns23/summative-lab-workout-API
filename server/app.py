@@ -15,7 +15,18 @@ db.init_app(app)
 # List all workouts
 @app.route('/workouts', methods=['GET'])
 def get_workouts():
-    pass
+    workouts = []
+    for workout in Workout.query.all():
+        workout_dict = {
+            'id': workout.id,
+            'date': workout.date, 
+            'duration_minutes': workout.duration_minutes,
+            'notes': workout.notes
+        }
+        workouts.append(workout_dict)
+    body = workouts
+    status = 200
+    return make_response(body, status)
 
 # Stretch goal: include reps/sets/duration data from WorkoutExercises
 # Show a single workout with its associated exercises
@@ -39,7 +50,18 @@ def delete_workout ():
 # List all exercises
 @app.route('/exercises', methods=['GET'])
 def get_exercises():
-    pass
+    exercises = []
+    for exercise in Exercise.query.all():
+        exercise_dict = {
+            'id': exercise.id,
+            'name': exercise.name, 
+            'category': exercise.category,
+            'equipment_needed': exercise.equipment_needed
+        }
+        exercises.append(exercise_dict)
+    body = exercises
+    status = 200
+    return make_response(body, status)
 
 
 # Show an exercise and associated workouts
