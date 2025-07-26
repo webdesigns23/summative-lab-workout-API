@@ -20,10 +20,7 @@ class Exercise(db.Model):
 			raise ValueError("Exercise name must not already exist")
 		return name
 
-	# *Foreign key in WorkoutExercise
 	workout_exercises = db.relationship('WorkoutExercise', back_populates='exercise', cascade='all, delete-orphan')
-	# # M2M
-	# workouts = db.relationship('Workout', secondary='workout_exercises', back_populates='exercises')
 
 	def __repr__(self):
 		return f'<Exercise {self.id}, {self.name}, {self.category}, {self.equipment_needed}>'
@@ -50,10 +47,7 @@ class Workout(db.Model):
 			raise ValueError("Notes cannot exceed 100 characters.")
 		return notes
 	
-	# *Foreign key in WorkoutExercise
 	workout_exercises = db.relationship('WorkoutExercise', back_populates='workout', cascade='all, delete-orphan')
-	# # M2M
-	# exercises = db.relationship('Exercise', secondary='workout_exercises', back_populates='workouts')
 
 	def __repr__(self):
 		return f'<Workout {self.id}, {self.date}, {self.duration_minutes}, {self.notes}>'
@@ -70,9 +64,7 @@ class WorkoutExercise(db.Model):
 
 	__table_args__ = (db.CheckConstraint('(reps >= 0) and (sets >= 0) and (duration_seconds >= 0)'),)
 
-	# A Workout has many Exercises through WorkoutExercises
 	workout = db.relationship('Workout', back_populates='workout_exercises')
-	# A Workout has many Exercises through WorkoutExercises
 	exercise = db.relationship('Exercise', back_populates='workout_exercises')
 
 	def __repr__(self):

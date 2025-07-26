@@ -5,6 +5,8 @@ from models import db, Exercise, Workout, WorkoutExercise
 from datetime import date
 
 with app.app_context():
+	db.drop_all()
+	db.create_all()
 
 	# reset data and add new example data, committing to db
 	WorkoutExercise.query.delete()
@@ -47,4 +49,4 @@ with app.app_context():
 	db.session.add_all([we1, we2, we3, we4, we5, we6])
 	db.session.commit()
 
-	print("🌱 Database seeded successfully with workout data!")
+	print("🏋️‍♀️ Database seeded successfully with workout data!")
