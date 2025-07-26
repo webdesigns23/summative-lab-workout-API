@@ -1,7 +1,8 @@
-from flask import Flask, make_response, jsonify
+from flask import Flask, jsonify, request
 from flask_migrate import Migrate
 from models import *
 from schemas import *
+from marshmallow import ValidationError
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -36,7 +37,15 @@ def get_workouts_with_exercises (id):
 # Create a workout
 @app.route('/workouts', methods=['POST'])
 def create_workouts():
-    pass
+    try:
+        workout_data = workout_schema.load(request.json)
+        new_workout = Workout(**workout_data)
+        db.session.add(new_workout)
+        db.session.commit()
+        serialized_workout = workout_schema.dump(new_workout)
+        return jsonify(serialized_workout), 201
+    except ValidationError as error:
+        return jsonify(error.messages), 404
 
 # Stretch goal: delete associated WorkoutExercises
 # Delete a workout
@@ -61,7 +70,15 @@ def get_exercise_with_workout(id):
 # Create an exercise
 @app.route('/exercises', methods=['POST'])
 def create_exercise():
-    pass
+    try:
+        exercise_data = exercise_schema.load(request.json)
+        new_exercise = Exercise(**exercise_data)
+        db.session.add(new_exercise)
+        db.session.commit()
+        serialized_exercise = exercise_schema.dump(new_exercise)
+        return jsonify(serialized_exercise), 201
+    except ValidationError as error:
+        return jsonify(error.messages), 404
 
 
 # Stretch goal: delete associated WorkoutExercises
