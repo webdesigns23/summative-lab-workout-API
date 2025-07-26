@@ -22,8 +22,8 @@ class Exercise(db.Model):
 
 	# *Foreign key in WorkoutExercise
 	workout_exercises = db.relationship('WorkoutExercise', back_populates='exercise', cascade='all, delete-orphan')
-	# M2M
-	workouts = db.relationship('Workout', secondary='workout_exercises', back_populates='exercises')
+	# # M2M
+	# workouts = db.relationship('Workout', secondary='workout_exercises', back_populates='exercises')
 
 	def __repr__(self):
 		return f'<Exercise {self.id}, {self.name}, {self.category}, {self.equipment_needed}>'
@@ -52,8 +52,8 @@ class Workout(db.Model):
 	
 	# *Foreign key in WorkoutExercise
 	workout_exercises = db.relationship('WorkoutExercise', back_populates='workout', cascade='all, delete-orphan')
-	# M2M
-	exercises = db.relationship('Exercise', secondary='workout_exercises', back_populates='workouts')
+	# # M2M
+	# exercises = db.relationship('Exercise', secondary='workout_exercises', back_populates='workouts')
 
 	def __repr__(self):
 		return f'<Workout {self.id}, {self.date}, {self.duration_minutes}, {self.notes}>'
