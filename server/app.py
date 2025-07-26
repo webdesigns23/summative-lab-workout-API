@@ -19,7 +19,7 @@ workouts_schema = WorkoutSchema(many=True)
 exercises_schema = ExerciseSchema(many=True)
 workouts_exercises_schema = WorkoutExerciseSchema(many=True)
 
-
+# Workout endpoints
 @app.route('/workouts', methods=['GET'])
 def get_workouts():
     workouts = Workout.query.all()
@@ -34,7 +34,6 @@ def get_workouts_with_exercises (id):
     serialized_workout = workout_schema.dump(workout)
     return jsonify(serialized_workout), 200
 
-# Create a workout
 @app.route('/workouts', methods=['POST'])
 def create_workouts():
     try:
@@ -47,11 +46,16 @@ def create_workouts():
     except ValidationError as error:
         return jsonify(error.messages), 404
 
-# Stretch goal: delete associated WorkoutExercises
-# Delete a workout
 @app.route('/workouts/<id>', methods=['DELETE'])
-def delete_workout ():
-    pass
+def delete_workout (id):
+    workout = Workout.query.get(id)
+    if not workout:
+        return jsonify({"error": "Workout not found."}),404
+    db.session.delete(workout)
+    db.session.commit()
+    return jsonify({"message":"Successfully deleted"}), 204
+
+# Exercise endpoints
 
 @app.route('/exercises', methods=['GET'])
 def get_exercises():
@@ -67,7 +71,6 @@ def get_exercise_with_workout(id):
     serialized_exercise = exercise_schema.dump(exercise)
     return jsonify(serialized_exercise), 200
 
-# Create an exercise
 @app.route('/exercises', methods=['POST'])
 def create_exercise():
     try:
@@ -80,12 +83,14 @@ def create_exercise():
     except ValidationError as error:
         return jsonify(error.messages), 404
 
-
-# Stretch goal: delete associated WorkoutExercises
-# Delete an exercise
 @app.route('/exercises/<id>', methods=['DELETE'])
-def delete_exercise():
-    pass
+def delete_exercise(id):
+    exercise = Exercise.query.get(id)
+    if not exercise:
+        return jsonify({"error": "Exercise not found."}),404
+    db.session.delete(exercise)
+    db.session.commit()
+    return jsonify({"message":"Successfully deleted"}), 204
 
 # Add an exercise to a workout, including reps/sets/duration
 @app.route('/workouts/<workout_id>/exercises/<exercise_id>/workout_exercises', methods=['POST'])
