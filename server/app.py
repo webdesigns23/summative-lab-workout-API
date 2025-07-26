@@ -14,10 +14,11 @@ db.init_app(app)
 
 workout_schema = WorkoutSchema()
 exercise_schema = ExerciseSchema()
+workout_exercise_schema = WorkoutExerciseSchema()
 
 workouts_schema = WorkoutSchema(many=True)
 exercises_schema = ExerciseSchema(many=True)
-workouts_exercises_schema = WorkoutExerciseSchema(many=True)
+
 
 # Workout endpoints
 @app.route('/workouts', methods=['GET'])
@@ -46,7 +47,7 @@ def create_workouts():
     except ValidationError as error:
         return jsonify(error.messages), 404
 
-@app.route('/workouts/<id>', methods=['DELETE'])
+@app.route('/workouts/<int:id>', methods=['DELETE'])
 def delete_workout (id):
     workout = Workout.query.get(id)
     if not workout:
@@ -63,7 +64,7 @@ def get_exercises():
     serialized_exercises = exercises_schema.dump(exercises)
     return jsonify(serialized_exercises), 200
 
-@app.route('/exercises/<id>', methods=['GET'])
+@app.route('/exercises/<int:id>', methods=['GET'])
 def get_exercise_with_workout(id):
     exercise = Exercise.query.get(id)
     if not exercise:
@@ -83,7 +84,7 @@ def create_exercise():
     except ValidationError as error:
         return jsonify(error.messages), 404
 
-@app.route('/exercises/<id>', methods=['DELETE'])
+@app.route('/exercises/<int:id>', methods=['DELETE'])
 def delete_exercise(id):
     exercise = Exercise.query.get(id)
     if not exercise:
@@ -93,10 +94,25 @@ def delete_exercise(id):
     return jsonify({"message":"Successfully deleted"}), 204
 
 # Add an exercise to a workout, including reps/sets/duration
-@app.route('/workouts/<workout_id>/exercises/<exercise_id>/workout_exercises', methods=['POST'])
-def add_exercise_to_workout():
-    pass
-
+@app.route('/workouts/<int:workout_id>/exercises/<int:exercise_id>/workout_exercises', methods=['POST'])
+def add_exercise_to_workout(workout_id, exercise_id):
+    workout = Workout.query.get(workout_id)
+    exercise = Exercise.query.get(exercise_id)
+    if not workout or not exercise:
+        return jsonify({"error": "Workout or Exercise not found."}), 404
+    
+    data = request.get_json()
+    try:
+        data['workout_id'] = workout_id
+        data['exercise_id'] = exercise_id
+        we_data = workout_exercise_schema.load(data)
+        new_we = WorkoutExercise(**we_data)
+        db.session.add(new_we)
+        db.session.commit()
+        serialized_we_data = workout_exercise_schema.dump(new_we)
+        return jsonify(serialized_we_data), 201
+    except ValidationError as error:
+        return jsonify(error.messages), 404
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
