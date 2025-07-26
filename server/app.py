@@ -1,7 +1,7 @@
-from flask import Flask, make_response
+from flask import Flask, make_response, jsonify
 from flask_migrate import Migrate
-
 from models import *
+from schemas import *
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -11,22 +11,16 @@ migrate = Migrate(app, db)
 
 db.init_app(app)
 
+workouts_schema = WorkoutSchema(many=True)
+exercises_schema = ExerciseSchema(many=True)
+workouts_exercises_schema = WorkoutExerciseSchema(many=True)
 
 # List all workouts
 @app.route('/workouts', methods=['GET'])
 def get_workouts():
-    workouts = []
-    for workout in Workout.query.all():
-        workout_dict = {
-            'id': workout.id,
-            'date': workout.date, 
-            'duration_minutes': workout.duration_minutes,
-            'notes': workout.notes
-        }
-        workouts.append(workout_dict)
-    body = workouts
-    status = 200
-    return make_response(body, status)
+    workouts = Workout.query.all()
+    serialized_workouts = workouts_schema.dump(workouts)
+    return jsonify(serialized_workouts), 200
 
 # Stretch goal: include reps/sets/duration data from WorkoutExercises
 # Show a single workout with its associated exercises
@@ -50,19 +44,9 @@ def delete_workout ():
 # List all exercises
 @app.route('/exercises', methods=['GET'])
 def get_exercises():
-    exercises = []
-    for exercise in Exercise.query.all():
-        exercise_dict = {
-            'id': exercise.id,
-            'name': exercise.name, 
-            'category': exercise.category,
-            'equipment_needed': exercise.equipment_needed
-        }
-        exercises.append(exercise_dict)
-    body = exercises
-    status = 200
-    return make_response(body, status)
-
+    exercises = Exercise.query.all()
+    serialized_exercises = exercises_schema.dump(exercises)
+    return jsonify(serialized_exercises), 200
 
 # Show an exercise and associated workouts
 @app.route('/exercises/<id>', methods=['GET'])
