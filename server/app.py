@@ -11,23 +11,27 @@ migrate = Migrate(app, db)
 
 db.init_app(app)
 
+workout_schema = WorkoutSchema()
+exercise_schema = ExerciseSchema()
+
 workouts_schema = WorkoutSchema(many=True)
 exercises_schema = ExerciseSchema(many=True)
 workouts_exercises_schema = WorkoutExerciseSchema(many=True)
 
-# List all workouts
+
 @app.route('/workouts', methods=['GET'])
 def get_workouts():
     workouts = Workout.query.all()
     serialized_workouts = workouts_schema.dump(workouts)
     return jsonify(serialized_workouts), 200
 
-# Stretch goal: include reps/sets/duration data from WorkoutExercises
-# Show a single workout with its associated exercises
 @app.route('/workouts/<id>', methods=['GET'])
-def get_workouts_with_exercises ():
-    pass
-
+def get_workouts_with_exercises (id):
+    workout = Workout.query.get(id)
+    if not workout:
+        return jsonify({'error':"Workout not found."}), 404
+    serialized_workout = workout_schema.dump(workout)
+    return jsonify(serialized_workout), 200
 
 # Create a workout
 @app.route('/workouts', methods=['POST'])
@@ -40,19 +44,19 @@ def create_workouts():
 def delete_workout ():
     pass
 
-
-# List all exercises
 @app.route('/exercises', methods=['GET'])
 def get_exercises():
     exercises = Exercise.query.all()
     serialized_exercises = exercises_schema.dump(exercises)
     return jsonify(serialized_exercises), 200
 
-# Show an exercise and associated workouts
 @app.route('/exercises/<id>', methods=['GET'])
-def get_exercise_with_workout():
-    pass
-
+def get_exercise_with_workout(id):
+    exercise = Exercise.query.get(id)
+    if not exercise:
+        return jsonify({'error':"Exercise not found."}), 404
+    serialized_exercise = exercise_schema.dump(exercise)
+    return jsonify(serialized_exercise), 200
 
 # Create an exercise
 @app.route('/exercises', methods=['POST'])
