@@ -47,4 +47,4 @@ with app.app_context():
 	db.session.add_all([we1, we2, we3, we4, we5, we6])
 	db.session.commit()
 
-	print("🌱 Database seeded successfully!")
+	print("🌱 Database seeded successfully with workout data!")
