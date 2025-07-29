@@ -75,9 +75,9 @@ python app.py
 # API Endpoints and Functionality:
 
 ## Workouts
-* GET /workouts
-List all workouts
-
+`monospace`GET /workouts
+* List all workouts
+ 
 * GET /workouts/<id>
 Stretch goal: include reps/sets/duration data from WorkoutExercises and shows a single workout with its associated exercises
 
