@@ -75,37 +75,34 @@ python app.py
 # API Endpoints and Functionality:
 
 ## Workouts
-`monospace`GET /workouts
+`GET /workouts`
 * List all workouts
  
-* GET /workouts/<id>
-Stretch goal: include reps/sets/duration data from WorkoutExercises and shows a single workout with its associated exercises
+`GET /workouts/<id>`
+* Stretch goal: include reps/sets/duration data from WorkoutExercises and shows a single workout with its associated exercises
 
-* POST /workouts
-Create a workout
+`POST /workouts`
+* Create a workout
 
-* DELETE /workouts/<id>
-Stretch goal: delete associated WorkoutExercises and Delete a workout
+`DELETE /workouts/<id>`
+* Stretch goal: delete associated WorkoutExercises and Delete a workout
 
 ## Exercises
-*GET /exercises
-List all exercises
+`GET /exercises`
+* List all exercises
 
-* GET /exercises/<id>
-Show an exercise and associated workouts
+`GET /exercises/<id>`
+* Show an exercise and associated workouts
 
-* POST /exercises
-Create an exercise
+`POST /exercises`
+*Create an exercise
 
-* DELETE /exercises/<id>
-Stretch goal: delete associated WorkoutExercises
-
-* Delete an exercise
-Delete an exercise
+`DELETE /exercises/<id>`
+* Stretch goal: delete associated WorkoutExercises and Delete an exercise
 
 ## Workout Exercises Relationship
-* POST workouts/<workout_id>/exercises/<exercise_id>/workout_exercises
-Add an exercise to a workout, including reps/sets/duration
+`POST workouts/<workout_id>/exercises/<exercise_id>/workout_exercises`
+* Add an exercise to a workout, including reps/sets/duration
 
 ## Testing:
 Use Pytests to run test to check models
