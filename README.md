@@ -104,12 +104,12 @@ python app.py
 `POST workouts/<workout_id>/exercises/<exercise_id>/workout_exercises`
 * Add an exercise to a workout, including reps/sets/duration
 
-## Testing:
+# Testing:
 Use Pytests to run test to check models
 ```bash
 python -m pytest -v
 ```
-## Commit and Push Git History
+# Commit and Push Git History
 1. Add your changes to the staging area by executing
 2. Create a commit by executing 
 3. Push your commits to GitHub by executing 
